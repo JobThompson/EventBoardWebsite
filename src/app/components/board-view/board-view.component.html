@@ -12,6 +12,12 @@
         <button class="btn btn-info" (click)="copyShareLink()">📋 Copy Link</button>
         <button class="btn btn-success" (click)="downloadBoard()">⬇️ Download</button>
         <button class="btn btn-print" (click)="printBoard()">🖨️ Print</button>
+        <button class="btn btn-outline" 
+                (click)="toggleGridOverlay()"
+                [class.active]="showGridOverlay"
+                title="Toggle Grid Overlay">
+          🔳 Grid
+        </button>
       </div>
     </div>
   </div>
@@ -34,13 +40,20 @@
       <div class="messages-section">
         <h2 [style.color]="theme.secondaryColor">Messages ({{ board.messages.length }})</h2>
         
-        <div class="messages-grid" *ngIf="board.messages.length > 0">
+        <div class="messages-grid" 
+             *ngIf="board.messages.length > 0"
+             [ngStyle]="gridStyles">
           <div class="message-card" 
-               *ngFor="let message of board.messages"
-               [style.border-color]="theme.primaryColor">
+               *ngFor="let message of sortedMessages; trackBy: trackByMessageId"
+               [style.border-color]="theme.primaryColor"
+               [attr.data-position]="message.position"
+               [class.positioned]="message.position !== undefined">
             <div class="message-header">
               <strong [style.color]="theme.primaryColor">{{ message.authorName }}</strong>
               <div class="message-actions no-print">
+                <span class="position-indicator" *ngIf="message.position !== undefined">
+                  #{{ message.position + 1 }}
+                </span>
                 <button class="btn-icon" (click)="deleteMessage(message.id)" title="Delete">🗑️</button>
               </div>
             </div>
@@ -62,6 +75,17 @@
             
             <div class="message-time">
               {{ message.createdAt | date:'short' }}
+            </div>
+          </div>
+          
+          <!-- Grid overlay for empty positions -->
+          <div class="grid-placeholder" 
+               *ngFor="let emptyPos of emptyGridPositions"
+               [class.show-overlay]="showGridOverlay"
+               [attr.data-position]="emptyPos">
+            <div class="placeholder-content">
+              <span class="placeholder-number">#{{ emptyPos + 1 }}</span>
+              <span class="placeholder-text">Empty</span>
             </div>
           </div>
         </div>

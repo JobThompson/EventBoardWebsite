@@ -60,13 +60,20 @@ export class MessageCreateComponent implements OnInit {
         messageData.mediaType = this.selectedFile.type.startsWith('image/') ? 'image' : 'video';
       }
 
-      this.boardService.addMessage(this.boardId, messageData);
-      this.messageAdded.emit();
-      
-      // Reset form
-      this.messageForm.reset();
-      this.selectedFile = null;
-      this.previewUrl = null;
+      this.boardService.addMessage(this.boardId, messageData).subscribe({
+        next: () => {
+          this.messageAdded.emit();
+          
+          // Reset form
+          this.messageForm.reset();
+          this.selectedFile = null;
+          this.previewUrl = null;
+        },
+        error: (error) => {
+          console.error('Error adding message:', error);
+          // You could show an error message to the user here
+        }
+      });
     }
   }
 }

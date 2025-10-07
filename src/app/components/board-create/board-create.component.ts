@@ -41,8 +41,15 @@ export class BoardCreateComponent implements OnInit {
 
   onSubmit(): void {
     if (this.boardForm.valid) {
-      const board = this.boardService.createBoard(this.boardForm.value);
-      this.router.navigate(['/board', board.id]);
+      this.boardService.createBoard(this.boardForm.value).subscribe({
+        next: (board) => {
+          this.router.navigate(['/board', board.id]);
+        },
+        error: (error) => {
+          console.error('Error creating board:', error);
+          // You could show an error message to the user here
+        }
+      });
     }
   }
 

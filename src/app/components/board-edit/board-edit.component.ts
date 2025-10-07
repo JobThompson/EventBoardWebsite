@@ -38,20 +38,25 @@ export class BoardEditComponent implements OnInit {
     
     this.route.params.subscribe(params => {
       this.boardId = params['id'];
-      this.board = this.boardService.getBoard(this.boardId) || null;
-      
-      if (this.board) {
-        this.boardForm.patchValue({
-          title: this.board.title,
-          description: this.board.description,
-          occasion: this.board.occasion,
-          recipientName: this.board.recipientName,
-          themeId: this.board.themeId,
-          isPublic: this.board.isPublic
-        });
-        
-        this.selectedTheme = this.themes.find(t => t.id === this.board!.themeId) || null;
-      }
+      this.boardService.getBoard(this.boardId).subscribe({
+        next: (board) => {
+          this.board = board;
+          this.boardForm.patchValue({
+            title: board.title,
+            description: board.description,
+            occasion: board.occasion,
+            recipientName: board.recipientName,
+            themeId: board.themeId,
+            isPublic: board.isPublic
+          });
+          
+          this.selectedTheme = this.themes.find(t => t.id === board.themeId) || null;
+        },
+        error: (error) => {
+          console.error('Error loading board:', error);
+          this.router.navigate(['/']);
+        }
+      });
     });
     
     this.boardForm.get('themeId')?.valueChanges.subscribe(themeId => {
@@ -61,8 +66,15 @@ export class BoardEditComponent implements OnInit {
 
   onSubmit(): void {
     if (this.boardForm.valid && this.board) {
-      this.boardService.updateBoard(this.boardId, this.boardForm.value);
-      this.router.navigate(['/board', this.boardId]);
+      this.boardService.updateBoard(this.boardId, this.boardForm.value).subscribe({
+        next: () => {
+          this.router.navigate(['/board', this.boardId]);
+        },
+        error: (error) => {
+          console.error('Error updating board:', error);
+          // You could show an error message to the user here
+        }
+      });
     }
   }
 

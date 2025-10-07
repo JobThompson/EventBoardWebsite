@@ -78,9 +78,22 @@
 
 .messages-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(4, 1fr); // Default to 4 columns, will be overridden by ngStyle
   gap: 2rem;
   margin-bottom: 2rem;
+  
+  // Responsive grid
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .message-card {
@@ -90,10 +103,25 @@
   border: 3px solid;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s, box-shadow 0.3s;
+  position: relative;
   
   &:hover {
     transform: translateY(-5px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  &.positioned {
+    &::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, transparent 30%, rgba(0, 123, 255, 0.1) 50%, transparent 70%);
+      border-radius: 12px;
+      z-index: -1;
+    }
   }
   
   .message-header {
@@ -106,6 +134,18 @@
     .message-actions {
       display: flex;
       gap: 0.5rem;
+      align-items: center;
+      
+      .position-indicator {
+        background: rgba(0, 0, 0, 0.1);
+        color: #666;
+        padding: 0.2rem 0.5rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        min-width: 2rem;
+        text-align: center;
+      }
     }
   }
   
@@ -158,6 +198,44 @@
     font-size: 1.2rem;
     margin-bottom: 2rem;
     color: #666;
+  }
+}
+
+.grid-placeholder {
+  background: rgba(255, 255, 255, 0.3);
+  border: 2px dashed rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  transition: all 0.3s ease;
+  
+  &.show-overlay {
+    display: flex;
+  }
+  
+  .placeholder-content {
+    text-align: center;
+    color: rgba(0, 0, 0, 0.4);
+    
+    .placeholder-number {
+      display: block;
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+    
+    .placeholder-text {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+  }
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.5);
+    border-color: rgba(0, 0, 0, 0.4);
   }
 }
 
@@ -312,6 +390,23 @@
     
     &:hover {
       transform: scale(1.2);
+    }
+  }
+  
+  &.btn-outline {
+    background: transparent;
+    border: 2px solid #666;
+    color: #666;
+    
+    &:hover {
+      background: #666;
+      color: white;
+    }
+    
+    &.active {
+      background: #007bff;
+      border-color: #007bff;
+      color: white;
     }
   }
 }

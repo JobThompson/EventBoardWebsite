@@ -32,7 +32,15 @@ export class HomeComponent implements OnInit {
 
   deleteBoard(board: Board): void {
     if (confirm(`Are you sure you want to delete "${board.title}"?`)) {
-      this.boardService.deleteBoard(board.id);
+      this.boardService.deleteBoard(board.id).subscribe({
+        next: () => {
+          // Board will be automatically removed from the list via the boards$ observable
+        },
+        error: (error) => {
+          console.error('Error deleting board:', error);
+          // You could show an error message to the user here
+        }
+      });
     }
   }
 
