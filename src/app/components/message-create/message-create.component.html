@@ -1,0 +1,65 @@
+<div class="message-create-container">
+  <form [formGroup]="messageForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="authorName">Your Name *</label>
+      <input 
+        type="text" 
+        id="authorName" 
+        formControlName="authorName" 
+        placeholder="Enter your name"
+        class="form-control"
+      />
+      <div class="error" *ngIf="messageForm.get('authorName')?.invalid && messageForm.get('authorName')?.touched">
+        Please enter your name
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="content">Your Message *</label>
+      <textarea 
+        id="content" 
+        formControlName="content" 
+        rows="5"
+        placeholder="Write your message here..."
+        class="form-control"
+      ></textarea>
+      <div class="error" *ngIf="messageForm.get('content')?.invalid && messageForm.get('content')?.touched">
+        Please enter a message (at least 3 characters)
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Add a Photo or Video (Optional)</label>
+      <div class="file-upload">
+        <input 
+          type="file" 
+          id="fileInput" 
+          accept="image/*,video/*"
+          (change)="onFileSelected($event)"
+          class="file-input"
+        />
+        <label for="fileInput" class="file-label">
+          📁 Choose File
+        </label>
+      </div>
+      
+      <div class="file-preview" *ngIf="previewUrl">
+        <button type="button" class="btn-remove" (click)="removeFile()">✕</button>
+        <img *ngIf="selectedFile && selectedFile.type.startsWith('image/')" 
+             [src]="previewUrl" 
+             alt="Preview" 
+             class="preview-image" />
+        <video *ngIf="selectedFile && selectedFile.type.startsWith('video/')" 
+               [src]="previewUrl" 
+               controls
+               class="preview-video"></video>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" [disabled]="!messageForm.valid">
+        Add Message
+      </button>
+    </div>
+  </form>
+</div>

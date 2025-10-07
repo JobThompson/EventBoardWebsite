@@ -1,0 +1,125 @@
+<div class="edit-container">
+  <div class="container">
+    <div class="edit-header">
+      <h1>Edit Board</h1>
+      <p>Update your celebration board details</p>
+    </div>
+
+    <div class="edit-content" *ngIf="board">
+      <form [formGroup]="boardForm" (ngSubmit)="onSubmit()" class="board-form">
+        <div class="form-section">
+          <h2>Board Details</h2>
+          
+          <div class="form-group">
+            <label for="title">Board Title *</label>
+            <input 
+              type="text" 
+              id="title" 
+              formControlName="title" 
+              class="form-control"
+            />
+            <div class="error" *ngIf="boardForm.get('title')?.invalid && boardForm.get('title')?.touched">
+              Please enter a title (at least 3 characters)
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="description">Description *</label>
+            <textarea 
+              id="description" 
+              formControlName="description" 
+              rows="3"
+              class="form-control"
+            ></textarea>
+            <div class="error" *ngIf="boardForm.get('description')?.invalid && boardForm.get('description')?.touched">
+              Please enter a description
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="occasion">Occasion *</label>
+              <select id="occasion" formControlName="occasion" class="form-control">
+                <option value="birthday">Birthday</option>
+                <option value="farewell">Farewell</option>
+                <option value="appreciation">Team Appreciation</option>
+                <option value="celebration">General Celebration</option>
+                <option value="congratulations">Congratulations</option>
+                <option value="getwell">Get Well Soon</option>
+                <option value="thank you">Thank You</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="recipientName">Recipient Name *</label>
+              <input 
+                type="text" 
+                id="recipientName" 
+                formControlName="recipientName" 
+                class="form-control"
+              />
+              <div class="error" *ngIf="boardForm.get('recipientName')?.invalid && boardForm.get('recipientName')?.touched">
+                Please enter the recipient's name
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="checkbox-label">
+              <input type="checkbox" formControlName="isPublic" />
+              <span>Make this board public (anyone with the link can view and add messages)</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2>Choose a Theme</h2>
+          
+          <div class="themes-grid">
+            <div 
+              *ngFor="let theme of themes" 
+              class="theme-option"
+              [class.selected]="boardForm.get('themeId')?.value === theme.id"
+              (click)="boardForm.patchValue({themeId: theme.id})"
+            >
+              <div 
+                class="theme-preview" 
+                [style.background-color]="theme.backgroundColor"
+                [style.border-color]="theme.primaryColor"
+              >
+                <div class="theme-colors">
+                  <span class="color-dot" [style.background-color]="theme.primaryColor"></span>
+                  <span class="color-dot" [style.background-color]="theme.secondaryColor"></span>
+                </div>
+              </div>
+              <div class="theme-name">{{ theme.name }}</div>
+            </div>
+          </div>
+
+          <div class="theme-preview-card" *ngIf="selectedTheme" [style.background-color]="selectedTheme.backgroundColor">
+            <h3 [style.color]="selectedTheme.primaryColor" [style.font-family]="selectedTheme.fontFamily">
+              Preview: {{ boardForm.get('title')?.value || 'Your Board Title' }}
+            </h3>
+            <p [style.color]="selectedTheme.textColor">
+              {{ boardForm.get('description')?.value || 'Your board description will appear here...' }}
+            </p>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="!boardForm.valid">
+            Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="not-found" *ngIf="!board">
+      <h2>Board Not Found</h2>
+      <p>The board you're trying to edit doesn't exist.</p>
+      <button class="btn btn-primary" (click)="onCancel()">Go Back</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,74 @@
+<div class="home-container">
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Welcome to EventBoard</h1>
+      <p class="hero-subtitle">Create and share beautiful digital group message boards for any occasion</p>
+      <button class="btn btn-primary btn-large" (click)="createBoard()">
+        🎨 Create Your Board
+      </button>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="container">
+      <h2>Perfect for Every Occasion</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🎂</div>
+          <h3>Birthdays</h3>
+          <p>Create a memorable birthday board with messages from friends and family</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">👋</div>
+          <h3>Farewells</h3>
+          <p>Send off colleagues with heartfelt goodbye messages and memories</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🏆</div>
+          <h3>Team Appreciation</h3>
+          <p>Celebrate team achievements and show your gratitude</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎉</div>
+          <h3>Special Celebrations</h3>
+          <p>Mark any special moment with a custom celebration board</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="my-boards" *ngIf="boards.length > 0">
+    <div class="container">
+      <h2>Your Boards</h2>
+      <div class="boards-grid">
+        <div class="board-card" *ngFor="let board of boards">
+          <div class="board-header">
+            <h3>{{ board.title }}</h3>
+            <span class="board-occasion">{{ board.occasion }}</span>
+          </div>
+          <p class="board-description">{{ board.description }}</p>
+          <div class="board-stats">
+            <span>📝 {{ board.messages.length }} messages</span>
+            <span>👤 For {{ board.recipientName }}</span>
+          </div>
+          <div class="board-actions">
+            <button class="btn btn-secondary" (click)="viewBoard(board)">View</button>
+            <button class="btn btn-secondary" (click)="editBoard(board)">Edit</button>
+            <button class="btn btn-info" (click)="copyShareLink(board)">📋 Copy Link</button>
+            <button class="btn btn-danger" (click)="deleteBoard(board)">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta" *ngIf="boards.length === 0">
+    <div class="container">
+      <h2>Ready to Get Started?</h2>
+      <p>Create your first EventBoard and invite others to contribute!</p>
+      <button class="btn btn-primary btn-large" (click)="createBoard()">
+        Create Your First Board
+      </button>
+    </div>
+  </section>
+</div>
