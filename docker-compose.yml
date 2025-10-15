@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  # Angular Frontend
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: Backend API (uncomment if you have a backend)
+  # backend:
+  #   image: node:18-alpine
+  #   working_dir: /app
+  #   volumes:
+  #     - ./backend:/app
+  #   ports:
+  #     - "3000:3000"
+  #   command: npm start
+  #   environment:
+  #     - NODE_ENV=production
+  #     - PORT=3000
+  #   restart: unless-stopped
+  #   networks:
+  #     - app-network
+  #   depends_on:
+  #     - database
+
+  # Optional: Database (uncomment if needed)
+  # database:
+  #   image: postgres:15-alpine
+  #   environment:
+  #     POSTGRES_DB: eventboard
+  #     POSTGRES_USER: eventboard
+  #     POSTGRES_PASSWORD: your_secure_password
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+  #   restart: unless-stopped
+  #   networks:
+  #     - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+# volumes:
+#   postgres_data:
